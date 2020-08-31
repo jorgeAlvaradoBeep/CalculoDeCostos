@@ -1,4 +1,5 @@
-﻿using Calculo_De_Costos.Models;
+﻿using Calculo_De_Costos.Controls;
+using Calculo_De_Costos.Models;
 using Calculo_De_Costos.Services;
 using Calculo_De_Costos.ViewModels.Commands;
 using System;
@@ -108,10 +109,13 @@ namespace Calculo_De_Costos.ViewModels
             get { return checkDataFile; }
             set { SetValue(ref checkDataFile, value); }
         }
-
+        //Propiedad de la ubicacion del archivo excel
+        public string ExcelFilePathLocation { get; set; }
         public LoadExcelFileCommand LoadExcelFileCommand { get; set; }
         public CheckDataEntranceCommand CheckDataEntranceCommand { get; set; }
         public LoadDataFromExcelFileCommand LoadDataFromExcelFileCommand { get; set; }
+        //Propiedad del PI Completo
+        public PI PI { get; set; }
 
         public ProductInfoVM()
         {
@@ -139,12 +143,8 @@ namespace Calculo_De_Costos.ViewModels
             CheckDataFile = Visibility.Hidden;
             IsFileDataButtonAvailable = false;
 
-            //Igualamos las Columnas
-            //ProductCode.EndColum.Data = ProductCode.StartColum.Data;
-            //ProductName.EndColum.Data = ProductName.StartColum.Data;
-            //ProductQuantity.EndColum.Data = ProductQuantity.StartColum.Data;
-            //ProductPrice.EndColum.Data = ProductPrice.StartColum.Data;
-            //ProductWeight.EndColum.Data = ProductWeight.StartColum.Data;
+            //Propiedad del PI Completo Asignada
+            PI = (PI)App.Current.Properties["IDPI"];
 
 
             LoadExcelFileCommand = new LoadExcelFileCommand(this);
@@ -162,7 +162,7 @@ namespace Calculo_De_Costos.ViewModels
             {
                 // Open document 
                 string filename = dlg.FileName;
-                MessageBox.Show(filename);
+                ExcelFilePathLocation = filename;
                 CheckLoadFile = Visibility.Visible;
                 IsLoadFileButtonAvailable = false;
                 IsFileDataButtonAvailable = true;
@@ -202,6 +202,15 @@ namespace Calculo_De_Costos.ViewModels
         {
             CheckDataFile = Visibility.Visible;
             IsFileDataButtonAvailable = false;
+            if(!string.IsNullOrEmpty(ExcelFilePathLocation))
+            {
+                int starCol = int.Parse(ProductCode.StartRow);
+                int endCol = int.Parse(ProductCode.EndRow);
+                string[] rows = { ProductCode.StartColum, ProductName.StartColum, ProductQuantity.StartColum, ProductPrice.StartColum, ProductWeight.StartColum };
+                
+                PI.PIProdducts= ExcelClass.GetBaseProductInfo(rows, starCol, endCol, ExcelFilePathLocation);
+            }
+            
         }
     }
 }

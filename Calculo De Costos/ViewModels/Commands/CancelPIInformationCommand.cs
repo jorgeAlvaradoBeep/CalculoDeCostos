@@ -30,6 +30,8 @@ namespace Calculo_De_Costos.ViewModels.Commands
             int result = await VM.DeletePI();
             if (result == 1)
                 piInfoWindow.Close();
+            else
+                MessageBox.Show("No se pudo eliminar el PI", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }   
     }
 }

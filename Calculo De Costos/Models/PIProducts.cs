@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculo_De_Costos.Models
 {
-    class PIProducts
+    public class PIProducts
     {
         public string id_product { get; set; }
         public string name { get; set; }

@@ -33,6 +33,7 @@ namespace Calculo_De_Costos.ViewModels
             SavePIInfoCommand = new SavePIInfoCommand(this);
             CancelPIInformationCommand = new CancelPIInformationCommand(this);
             PI = (PI)App.Current.Properties["IDPI"];
+            PiInfo.id_pi = PI.id;
         }
         public async Task<bool> SavePIInfo()
         {
@@ -63,12 +64,14 @@ namespace Calculo_De_Costos.ViewModels
 
             WaitPlease w = new WaitPlease();
             w.Show();
-            
 
-            Response r = await WebService.InsertData(PiInfo, "http://localhost/costs_api/controller/pi/pi_info.php", PI.DataType.NewPIData);
+            PI.PIInfo = PiInfo;
+            Response r = await WebService.InsertData(PI.PIInfo, "http://localhost/costs_api/controller/pi/pi_info.php", PI.DataType.NewPIData);
             w.Close();
-            App.Current.Properties["COMPLTE_PI"]=piInfo;
+            App.Current.Properties["IDPI"] =PI;
             MessageBox.Show(r.message);
+            if (r.statusCode != 200)
+                return false;
             return r.succes;
 
         }
@@ -78,7 +81,7 @@ namespace Calculo_De_Costos.ViewModels
             WaitPlease w = new WaitPlease();
             w.Show();
 
-            Response r = await WebService.DeleteData(piInfo.id_pi);
+            Response r = await WebService.DeleteData(PI.id);
             w.Close();
             int rowDeleted = int.Parse(r.message);
             return rowDeleted;

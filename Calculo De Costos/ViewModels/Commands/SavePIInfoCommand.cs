@@ -44,6 +44,10 @@ namespace Calculo_De_Costos.ViewModels.Commands
                 pI.Show();
                 piInfoWindow.Close();
             }
+            else
+            {
+                await VM.DeletePI();
+            }
         }
     }
 }
